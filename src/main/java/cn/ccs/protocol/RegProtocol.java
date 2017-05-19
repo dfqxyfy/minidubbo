@@ -35,8 +35,8 @@ public class RegProtocol {
     @Override
     public String toString() {
         return
-                "host='" + host + '\'' +
-                ", port='" + port + '\'' +
-                ", className='" + className + '\'' ;
+                "host=" + host  +
+                ", port=" + port +
+                ", className=" + className ;
     }
 }

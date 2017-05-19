@@ -46,10 +46,10 @@ public class TransProtocol {
     @Override
     public String toString() {
         return
-                "className='" + className + '\'' +
-                ", methodName='" + methodName + '\'' +
-                ", parameter='" + parameter + '\'' +
-                ", result='" + result + '\''
+                "className=" + className +
+                ", methodName=" + methodName +
+                ", parameter=" + parameter +
+                ", result=" + result
                 ;
     }
 }

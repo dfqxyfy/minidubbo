@@ -36,8 +36,7 @@ public class SocketProvider {
                     String receiveInfo = null;
                     br = new BufferedReader(new InputStreamReader(inputStream));
                     receiveInfo = br.readLine();
-                    Protocol<TransProtocol> protocolProtocol = new Protocol<TransProtocol>();
-                    TransProtocol tp = protocolProtocol.toTransProtocol(receiveInfo);
+                    TransProtocol tp = Protocol.toTransProtocol(receiveInfo);
 
                     Object obj = Provider.objectMap.get(tp.getClassName());
                     try {

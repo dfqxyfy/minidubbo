@@ -16,8 +16,7 @@ public class Register {
     }
     public static RegProtocol getRegFile(){
         String str = read();
-        Protocol<RegProtocol> regProtocol = new Protocol<>();
-        return regProtocol.toTransProtocol(str);
+        return Protocol.toRegProtocol(str);
     }
 
     private static synchronized void write(String str){

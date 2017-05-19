@@ -10,24 +10,33 @@ import static javafx.scene.input.KeyCode.T;
 /**
  * Created by chaichuanshi on 2017/5/19.
  */
-public class Protocol<T> {
+public class Protocol {
 
-    public T toTransProtocol(String info){
+    public static Map<String,String> getMap(String info){
         Map<String,String> map = new HashMap<>();
         String[] ss = info.split(",");
         for(String s:ss){
             String[] inners = s.split("=");
             map.put(inners[0].trim(),inners[1].trim());
         }
-        T obj = setValue(map);
+        return map;
+    }
+
+    public static TransProtocol toTransProtocol(String info){
+        TransProtocol obj = (TransProtocol) setValue(TransProtocol.class , getMap(info));
         return obj;
     }
 
-    private T setValue(Map<String,String> map){
+    public static RegProtocol toRegProtocol(String info){
+        RegProtocol obj = (RegProtocol) setValue(RegProtocol.class , getMap(info));
+        return obj;
+    }
+
+    private static Object setValue(Class<?> t,Map<String,String> map){
 
         Object obj = null;
         try {
-            obj = T.newInstance();
+            obj = t.newInstance();
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -48,6 +57,6 @@ public class Protocol<T> {
                 }
             }
         }
-        return (T)obj;
+        return obj;
     }
 }
