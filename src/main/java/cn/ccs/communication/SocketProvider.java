@@ -30,10 +30,10 @@ public class SocketProvider {
             @Override
             public void run(){
                 InputStream inputStream = null;
+                BufferedReader br = null;
+                String receiveInfo = null;
                 try {
                     inputStream = socket.getInputStream();
-                    BufferedReader br = null;
-                    String receiveInfo = null;
                     br = new BufferedReader(new InputStreamReader(inputStream));
                     while((receiveInfo = br.readLine()) != null) {
                         System.out.println("receiving msg:"+receiveInfo);
@@ -54,6 +54,12 @@ public class SocketProvider {
                         } catch (NoSuchMethodException e) {
                             e.printStackTrace();
                         }
+
+                        OutputStreamWriter out = new OutputStreamWriter(socket.getOutputStream());
+                        out.write(tp.toString());
+                        out.write("\n");
+                        out.flush();
+
                     }
                 } catch (IOException e) {
                     e.printStackTrace();

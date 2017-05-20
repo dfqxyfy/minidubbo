@@ -18,6 +18,7 @@ public class SocketConsumer {
         try {
             socket.bind(new InetSocketAddress(host, Integer.valueOf(Constants.CONSUMER_PORT)));
             socket.connect(new InetSocketAddress(host, Integer.valueOf(port)));
+            new ExThread(socket.getInputStream()).start();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -30,7 +31,7 @@ public class SocketConsumer {
         out.flush();
     }
 
-    private class ExThread extends Thread{
+    private static class ExThread extends Thread{
         InputStream inputStream ;
         public ExThread(InputStream inputStream ){
             this.inputStream = inputStream;
@@ -41,8 +42,9 @@ public class SocketConsumer {
             String receiveInfo = null;
             br = new BufferedReader(new InputStreamReader(inputStream));
             try {
-                receiveInfo = br.readLine();
-                System.out.println(receiveInfo);
+                while((receiveInfo = br.readLine())!=null){
+                    System.out.println(receiveInfo);
+                };
             } catch (IOException e) {
                 e.printStackTrace();
             }
