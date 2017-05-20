@@ -6,7 +6,7 @@ package cn.ccs.service;
 public class HelloServiceImpl implements HelloService {
     @Override
     public String sayHello(String hello) {
-        System.out.println("service receive:"+hello);
+        System.out.println("service execute:"+hello);
         return hello + "world";
     }
 }

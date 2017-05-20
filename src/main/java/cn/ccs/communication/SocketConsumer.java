@@ -15,9 +15,9 @@ public class SocketConsumer {
     private static Socket socket = null;
     public static void init(String host,String port){
         socket = new Socket();
-        SocketAddress socketAddress = new InetSocketAddress(host, Integer.valueOf(port));
         try {
-            socket.bind(socketAddress);
+            socket.bind(new InetSocketAddress(host, Integer.valueOf(Constants.CONSUMER_PORT)));
+            socket.connect(new InetSocketAddress(host, Integer.valueOf(port)));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -26,6 +26,7 @@ public class SocketConsumer {
     public static void sendMessage(String str) throws IOException {
         OutputStreamWriter out = new OutputStreamWriter(socket.getOutputStream());
         out.write(str);
+        out.write("\n");
         out.flush();
     }
 

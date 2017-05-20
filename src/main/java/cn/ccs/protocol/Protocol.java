@@ -32,6 +32,10 @@ public class Protocol {
         return obj;
     }
 
+    public static <T> T toProtocol(String info,Class<T> t){
+        return (T)setValue(t,getMap(info));
+    }
+
     private static Object setValue(Class<?> t,Map<String,String> map){
 
         Object obj = null;

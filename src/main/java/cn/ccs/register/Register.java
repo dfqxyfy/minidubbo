@@ -10,7 +10,7 @@ import java.io.*;
  */
 public class Register {
     private static String folder = System.getProperty("java.io.tmpdir");
-    private static String regFile = "/minidubbo.reg";
+    private static String regFile = "minidubbo.dreg";
     public static void register(String url){
         write(url);
     }
@@ -22,7 +22,10 @@ public class Register {
     private static synchronized void write(String str){
         FileWriter fw = null;
         try {
-            fw = new FileWriter(folder+regFile);
+            File f = new File(folder+regFile);
+            if(!f.exists())
+                f.createNewFile();
+            fw = new FileWriter(f);
             fw.write(str);
 
         } catch (IOException e) {
