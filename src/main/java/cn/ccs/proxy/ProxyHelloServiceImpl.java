@@ -15,9 +15,8 @@ public class ProxyHelloServiceImpl implements HelloService {
     public String sayHello(String hello) {
 
         TransProtocol tp = new TransProtocol();
-        this.getClass().getAnnotatedInterfaces();
         tp.setClassName(this.getClass().getInterfaces()[0].getName());
-        tp.setMethodName("sayHello");
+        tp.setMethodName(Thread.currentThread().getStackTrace()[1].getMethodName());
         tp.setParameter(hello);
         try {
             return SocketConsumer.sendMessage(tp.toString());
@@ -35,5 +34,7 @@ public class ProxyHelloServiceImpl implements HelloService {
             System.out.println(c.getName());
             System.out.println(".............");
         }
+
+       p.sayHello("hh");
     }
 }
