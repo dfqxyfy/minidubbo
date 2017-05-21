@@ -18,37 +18,34 @@ public class SocketConsumer {
         try {
             socket.bind(new InetSocketAddress(host, Integer.valueOf(Constants.CONSUMER_PORT)));
             socket.connect(new InetSocketAddress(host, Integer.valueOf(port)));
-            new ExThread(socket.getInputStream()).start();
+            //new ExThread(socket.getInputStream()).start();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void sendMessage(String str) throws IOException {
+    public static String sendMessage(String msg) throws IOException {
         OutputStreamWriter out = new OutputStreamWriter(socket.getOutputStream());
-        out.write(str);
+        out.write(msg);
         out.write("\n");
         out.flush();
+
+        BufferedReader br = null;
+        String receiveInfo = null;
+        br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+        StringBuilder strb = new StringBuilder();
+        try {
+            while ((receiveInfo = br.readLine()) != null) {
+                System.out.println(receiveInfo);
+                strb.append(receiveInfo);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return  strb.toString();
     }
 
-    private static class ExThread extends Thread{
-        InputStream inputStream ;
-        public ExThread(InputStream inputStream ){
-            this.inputStream = inputStream;
-        }
-        @Override
-        public void run(){
-            BufferedReader br = null;
-            String receiveInfo = null;
-            br = new BufferedReader(new InputStreamReader(inputStream));
-            try {
-                while((receiveInfo = br.readLine())!=null){
-                    System.out.println(receiveInfo);
-                };
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+
 
 }

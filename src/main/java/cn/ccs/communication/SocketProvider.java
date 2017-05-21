@@ -59,12 +59,10 @@ public class SocketProvider {
                         out.write(tp.toString());
                         out.write("\n");
                         out.flush();
-
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
             }
         }.start();
 

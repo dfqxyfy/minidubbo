@@ -3,6 +3,7 @@ package cn.ccs;
 import cn.ccs.communication.SocketConsumer;
 import cn.ccs.protocol.RegProtocol;
 import cn.ccs.protocol.TransProtocol;
+import cn.ccs.proxy.ProxyHelloServiceImpl;
 import cn.ccs.register.Register;
 import cn.ccs.service.HelloService;
 
@@ -17,16 +18,12 @@ public class Consumer {
         RegProtocol regProtocol = Register.getRegFile();
         SocketConsumer.init(regProtocol.getHost(),regProtocol.getPort());
 
-
-        //此处客户端动态调用方法暂时HelloService.sayHello(); 后面通过asm来动态生成HelloService子类，实现该功能
-        TransProtocol tp = new TransProtocol();
-        tp.setClassName("cn.ccs.service.HelloService");
-        tp.setMethodName("sayHello");
-        tp.setParameter("hello Server...");
-
+        //使用静态代理访问，后面通过asm来动态生成HelloService子类，实现该功能
+        HelloService helloService = new ProxyHelloServiceImpl();
 
         try {
-            SocketConsumer.sendMessage(tp.toString());
+            String result = helloService.sayHello("cusumer say Hello ....");
+            System.out.println("receving from server:"+result);
 
             System.in.read();
         } catch (IOException e) {
