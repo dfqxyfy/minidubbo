@@ -1,5 +1,7 @@
 package cn.ccs.proxy;
 
+import cn.ccs.communication.SocketConsumer;
+import cn.ccs.protocol.TransProtocol;
 import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 
 import java.lang.reflect.InvocationHandler;
@@ -11,13 +13,21 @@ import java.lang.reflect.Proxy;
  */
 public class ProxyObject {
 
-    public Object getProxy(Class<?>[] cls ){
+    public static <T> T getProxy(Class<?> cls ){
 
 
-        return Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), cls , new InvocationHandler() {
+        return (T)Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), new Class[]{cls} , new InvocationHandler() {
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                return method.invoke(proxy,args);
+
+                if(method.getName().equals("sayHello")) {
+                    TransProtocol tp = new TransProtocol();
+                    tp.setClassName(cls.getName());
+                    tp.setMethodName(method.getName());
+                    tp.setParameter(args[0].toString());
+                    return SocketConsumer.sendMessage(tp.toString());
+                }
+                return null;
             }
         });
     }
