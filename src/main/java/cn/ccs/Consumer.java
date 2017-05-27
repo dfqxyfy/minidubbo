@@ -12,7 +12,7 @@ import java.io.IOException;
  * Created by chaichuanshi on 2017/5/19.
  */
 public class Consumer {
-    public static void main(String[] args)  {
+    public static void main(String[] args) throws IOException {
 
         RegProtocol regProtocol = Register.getRegFile();
         SocketConsumer.init(regProtocol.getHost(),regProtocol.getPort());
@@ -30,7 +30,6 @@ public class Consumer {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
     }
 
 }

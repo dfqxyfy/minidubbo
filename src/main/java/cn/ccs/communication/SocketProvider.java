@@ -40,28 +40,34 @@ public class SocketProvider {
                     continue;
                 }
                 System.out.println("receiving msg:" + receiveInfo);
-                Object obj = Provider.objectMap.get(tp.getClassName());
-                try {
-                    //简化传值参数为String类型，并且只有一个参数
-                    Method method = obj.getClass().getMethod(tp.getMethodName(), String.class);
-                    try {
-                        Object result = method.invoke(obj, tp.getParameter());
-                        tp.setResult(result.toString());//默认为String
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    } catch (InvocationTargetException e) {
-                        e.printStackTrace();
-                    }
-                } catch (NoSuchMethodException e) {
-                    e.printStackTrace();
-                }
+                invokeMethod(tp);
+
                 OutputStreamWriter out = new OutputStreamWriter(socket.getOutputStream());
                 out.write(tp.toString());
                 out.write("\n");
                 out.flush();
             } catch (IOException e) {
+                inputStream.close();
                 e.printStackTrace();
             }
+        }
+    }
+
+    private static void invokeMethod(TransProtocol tp){
+        Object obj = Provider.objectMap.get(tp.getClassName());
+        try {
+            //简化传值参数为String类型，并且只有一个参数
+            Method method = obj.getClass().getMethod(tp.getMethodName(), String.class);
+            try {
+                Object result = method.invoke(obj, tp.getParameter());
+                tp.setResult(result.toString());//默认为String
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
         }
     }
 }

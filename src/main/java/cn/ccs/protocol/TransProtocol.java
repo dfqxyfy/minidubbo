@@ -6,6 +6,8 @@ import java.util.List;
  * Created by chaichuanshi on 2017/5/19.
  */
 public class TransProtocol {
+
+    private String id;
     private String className;
     private String methodName;
     private String parameter;//简化参数,为1个String类型
@@ -43,10 +45,18 @@ public class TransProtocol {
         this.result = result;
     }
 
+    public String getId() {
+        return id;
+    }
+    public void setId(String id) {
+        this.id = id;
+    }
+
     @Override
     public String toString() {
         return
-                "className=" + className +
+                "id=" + id +
+                ", className=" + className +
                 ", methodName=" + methodName +
                 ", parameter=" + parameter +
                 ", result=" + result
