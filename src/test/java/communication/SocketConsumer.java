@@ -18,7 +18,7 @@ public class SocketConsumer {
     public static void init(String host,String port){
         socket = new Socket();
         try {
-            socket.bind(new InetSocketAddress(host, Integer.valueOf(Constants.CONSUMER_PORT)));
+            //socket.bind(new InetSocketAddress(host, Integer.valueOf(Constants.CONSUMER_PORT)));
             socket.connect(new InetSocketAddress(host, Integer.valueOf(port)));
             //new ExThread(socket.getInputStream()).start();
         } catch (IOException e) {

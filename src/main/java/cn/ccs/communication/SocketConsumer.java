@@ -61,7 +61,7 @@ public class SocketConsumer {
         try {
             resMap.put(tp.getId(),res);
             synchronized (res.getLock()) {
-                res.getLock().wait();
+                res.getLock().wait(3000);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
