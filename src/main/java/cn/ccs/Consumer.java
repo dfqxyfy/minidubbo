@@ -12,7 +12,7 @@ import java.io.IOException;
  * Created by chaichuanshi on 2017/5/19.
  */
 public class Consumer {
-    public static void main(String[] args) {
+    public static void main(String[] args)  {
 
         RegProtocol regProtocol = Register.getRegFile();
         SocketConsumer.init(regProtocol.getHost(),regProtocol.getPort());
@@ -20,11 +20,14 @@ public class Consumer {
         //使用静态代理访问，后面通过asm来动态生成HelloService子类，实现该功能
         HelloService helloService = ProxyObject.getProxy(HelloService.class);
         try {
-            String result = helloService.sayHello("cusumer say Hello ....");
-            System.out.println("receving from server:"+result);
-
-            System.in.read();
-        } catch (IOException e) {
+            for(int count = 0;count<10;count++) {
+                String result = helloService.sayHello("cusumer say Hello ...."+count);
+                System.out.println("receving from server:" + result);
+                Thread.sleep(1000);
+            }
+            SocketConsumer.destroy();
+            //System.in.read();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
