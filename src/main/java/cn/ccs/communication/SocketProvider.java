@@ -18,58 +18,77 @@ import java.net.SocketAddress;
  * Created by chaichuanshi on 2017/5/19.
  */
 public class SocketProvider {
+    private static ServerSocket serverSocket = null;
+    private static void init() throws IOException {
+        if(serverSocket != null)
+            return;
+        serverSocket = new ServerSocket();
+        SocketAddress socketAddress = new InetSocketAddress("127.0.0.1", Integer.valueOf(Constants.SERVER_PORT));
+        serverSocket.bind(socketAddress);
+    }
 
     public static void start() throws IOException {
-        ServerSocket serverSocket = new ServerSocket();
-        SocketAddress socketAddress = new InetSocketAddress("127.0.0.1",Integer.valueOf(Constants.SERVER_PORT));
-        serverSocket.bind(socketAddress);
-
-        final Socket socket = serverSocket.accept();
-
-        new Thread(){
-            @Override
-            public void run(){
-                InputStream inputStream = null;
-                BufferedReader br = null;
-                String receiveInfo = null;
-                try {
-                    inputStream = socket.getInputStream();
-                    br = new BufferedReader(new InputStreamReader(inputStream));
-                    while((receiveInfo = br.readLine()) != null) {
-                        System.out.println("receiving msg:"+receiveInfo);
-                        TransProtocol tp = Protocol.toTransProtocol(receiveInfo);
-
-                        Object obj = Provider.objectMap.get(tp.getClassName());
-                        try {
-                            //简化传值参数为String类型，并且只有一个参数
-                            Method method = obj.getClass().getMethod(tp.getMethodName(), String.class);
-                            try {
-                                Object result = method.invoke(obj, tp.getParameter());
-                                tp.setResult(result.toString());//默认为String
-                            } catch (IllegalAccessException e) {
-                                e.printStackTrace();
-                            } catch (InvocationTargetException e) {
-                                e.printStackTrace();
-                            }
-                        } catch (NoSuchMethodException e) {
-                            e.printStackTrace();
-                        }
-
-                        OutputStreamWriter out = new OutputStreamWriter(socket.getOutputStream());
-                        out.write(tp.toString());
-                        out.write("\n");
-                        out.flush();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-
-
-
-
+        init();
+        while(true){
+            Socket socket = serverSocket.accept();
+            new ExThread(socket).start();
+        }
     }
 
 
+}
+class ExThread extends Thread{
+    private Socket socket;
+    public ExThread(Socket socket){
+        this.socket = socket;
+    }
+    @Override
+    public void run() {
+
+        BufferedReader br = null;
+        String receiveInfo = null;
+        try {
+            br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        while (true) {
+            try {
+                TransProtocol tp = null;
+                if ((receiveInfo = br.readLine()) != null) {
+                    tp = Protocol.toTransProtocol(receiveInfo);
+                }else {
+                    continue;
+                }
+                System.out.println("receiving msg:" + receiveInfo);
+                invokeMethod(tp);
+
+                OutputStreamWriter out = new OutputStreamWriter(socket.getOutputStream());
+                out.write(tp.toString());
+                out.write("\n");
+                out.flush();
+                System.out.println("server ..outprint....");
+            } catch (IOException e) {
+                //inputStream.close();
+                e.printStackTrace();
+            }
+        }
+    }
+    private static void invokeMethod(TransProtocol tp){
+        Object obj = Provider.objectMap.get(tp.getClassName());
+        try {
+            //简化传值参数为String类型，并且只有一个参数
+            Method method = obj.getClass().getMethod(tp.getMethodName(), String.class);
+            try {
+                Object result = method.invoke(obj, tp.getParameter());
+                tp.setResult(result.toString());//默认为String
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+    }
 }

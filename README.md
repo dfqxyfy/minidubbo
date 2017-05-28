@@ -3,12 +3,13 @@
 1. 最基本的实现provider 向注册register注册服务，并在consumer消费服务（实现时暂时不引入其他包）
     register,暂时使用临时文件代替注册中心
     provider与consumer使用基本socket通信
-    
-2. 扩展provider和consumer
-    使provider和consumer有分组属性，有重试次数，超时时间等的配置
-    
-3. 扩展服务注册者：
+
+2. 扩展服务注册者：
     可以使用zookeeper其他注册服务，consumer可以动态随机获取provider
+
+3. 扩展provider和consumer
+    使provider和consumer有分组属性，有重试次数，超时时间等的配置
+
 
 通过上面就是一个最基本的分布式注册服务，下面对各个方面进行优化
  

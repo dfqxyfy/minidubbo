@@ -5,5 +5,5 @@ package cn.ccs;
  */
 public class Constants {
     public static final String SERVER_PORT = "10010";
-    public static final String CONSUMER_PORT = "10011";
+    public static final String CONSUMER_PORT = "10014";
 }
