@@ -1,12 +1,14 @@
-package cn.ccs.register;
+package cn.ccs.register.zookeeper;
 
-import cn.ccs.config.MUrl;
+import cn.ccs.common.MException;
+import cn.ccs.register.MUrl;
+import cn.ccs.register.Register;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.List;
 import java.util.Random;
 
@@ -18,7 +20,8 @@ import java.util.Random;
  * <p>
  * 实现方式:引入zookeeper客户端
  */
-public class ZkRegister {
+public class ZkRegister implements Register {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ZkRegister.class);
     //ZooKeeper
     private ZooKeeper zookeeper;
 
@@ -28,43 +31,47 @@ public class ZkRegister {
     private final int sessionTimeout = 30000;
 
     //注册在zk中使用 /mdubbo/cn.xxxService/mUrl的方式
+    @Override
     public void register(MUrl mUrl) {
         createPath(genUrl(mUrl));
     }
 
+    @Override
     public MUrl getRegister(String className) {
+        List<String> children = null;
         try {
-            final List<String> children = zookeeper.getChildren(basicPath + "/" + className, false);
-            Random random = new Random();
-            int rand = random.nextInt(children.size());
-            String regStr = children.get(rand);
-            MUrl mUrl = MUrl.toMUrl(regStr);
-
-            return mUrl;
-        } catch (KeeperException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            children = zookeeper.getChildren(basicPath + "/" + className, false);
+        } catch (KeeperException | InterruptedException e) {//客户端获取异常
+            LOGGER.error("客户端获取类{}出错", className, e);
+            throw new MException("客户端获取类{1}出错", className);
         }
-        return null;
+        Random random = new Random();
+        int rand = random.nextInt(children.size());
+        String regStr = children.get(rand);
+        return MUrl.toMUrl(regStr);
     }
 
     private void createPath(String path) {
         String[] strs = path.split("/");
         StringBuilder mPath = new StringBuilder();
-        for (String s : strs) {
+        for (int i = 0; i < strs.length; i++) {
+            String s = strs[i];
+            if (s == null || "".equals(s.trim()))
+                continue;
+            mPath.append("/" + s);
+            CreateMode cm = CreateMode.PERSISTENT;
+            if (i == (strs.length - 1)) {
+                cm = CreateMode.EPHEMERAL;
+            }
             try {
-                if (s == null || "".equals(s.trim()))
-                    continue;
-                mPath.append("/" + s);
                 Stat stat = zookeeper.exists(mPath.toString(), false);
                 if (stat == null) {
-                    zookeeper.create(mPath.toString(), null, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+
+                    zookeeper.create(mPath.toString(), null, ZooDefs.Ids.OPEN_ACL_UNSAFE, cm);
                 }
-            } catch (KeeperException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            } catch (KeeperException | InterruptedException e) {//服务注册异常
+                LOGGER.error("服务器注册路径{}出错", mPath, e);
+                throw new MException("服务器注册路径{1}出错", mPath.toString());
             }
         }
 

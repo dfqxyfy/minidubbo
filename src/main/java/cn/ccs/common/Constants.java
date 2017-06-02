@@ -1,4 +1,4 @@
-package cn.ccs;
+package cn.ccs.common;
 
 /**
  * Created by chaichuanshi on 2017/5/19.

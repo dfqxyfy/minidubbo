@@ -20,7 +20,6 @@ public class ProxyObject {
         return (T)Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), new Class[]{cls} , new InvocationHandler() {
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-
                 //if(method.getName().equals("sayHello")) {
                 TransProtocol tp = new TransProtocol();
                 tp.setId(UUID.randomUUID().toString().replace("-",""));
@@ -28,9 +27,6 @@ public class ProxyObject {
                 tp.setMethodName(method.getName());
                 tp.setParameter(args[0].toString());
                 return SocketConsumer.sendMessage(tp);
-                // return "2222";
-                //}
-                //return null;
             }
         });
     }

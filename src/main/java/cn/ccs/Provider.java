@@ -1,10 +1,9 @@
 package cn.ccs;
 
+import cn.ccs.common.Constants;
 import cn.ccs.communication.SocketProvider;
-import cn.ccs.config.MUrl;
-import cn.ccs.protocol.RegProtocol;
-import cn.ccs.register.Register;
-import cn.ccs.register.ZkRegister;
+import cn.ccs.register.MUrl;
+import cn.ccs.register.zookeeper.ZkRegister;
 import cn.ccs.service.HelloService;
 import cn.ccs.service.HelloServiceImpl;
 

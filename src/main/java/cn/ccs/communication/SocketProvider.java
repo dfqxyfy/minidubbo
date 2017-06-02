@@ -1,9 +1,8 @@
 package cn.ccs.communication;
 
-import cn.ccs.Constants;
+import cn.ccs.common.Constants;
 import cn.ccs.Provider;
 import cn.ccs.protocol.Protocol;
-import cn.ccs.protocol.RegProtocol;
 import cn.ccs.protocol.TransProtocol;
 
 import java.io.*;
@@ -56,7 +55,7 @@ class ExThread extends Thread{
             try {
                 TransProtocol tp = null;
                 if ((receiveInfo = br.readLine()) != null) {
-                    tp = Protocol.toTransProtocol(receiveInfo);
+                    tp = Protocol.toProtocol(receiveInfo,TransProtocol.class);
                 }else {
                     continue;
                 }

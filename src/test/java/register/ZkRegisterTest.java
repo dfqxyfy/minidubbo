@@ -1,7 +1,7 @@
 package register;
 
-import cn.ccs.config.MUrl;
-import cn.ccs.register.ZkRegister;
+import cn.ccs.register.MUrl;
+import cn.ccs.register.zookeeper.ZkRegister;
 import org.junit.Test;
 
 import java.io.IOException;

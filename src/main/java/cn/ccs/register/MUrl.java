@@ -1,4 +1,6 @@
-package cn.ccs.config;
+package cn.ccs.register;
+
+import cn.ccs.common.MException;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -17,92 +19,109 @@ public class MUrl {
     private String host;
     private String port;
     private String className;
-    private Map<String,String> attributes = new HashMap<>();
+    private Map<String, String> attributes = new HashMap<>();
 
     public String getProtocol() {
         return protocol;
     }
+
     public void setProtocol(String protocol) {
         this.protocol = protocol;
     }
+
     public String getHost() {
         return host;
     }
+
     public void setHost(String host) {
         this.host = host;
     }
+
     public String getPort() {
         return port;
     }
+
     public void setPort(String port) {
         this.port = port;
     }
+
     public String getClassName() {
         return className;
     }
+
     public void setClassName(String className) {
         this.className = className;
     }
+
     public Map<String, String> getAttributes() {
         return attributes;
     }
+
     public void setAttributes(Map<String, String> attributes) {
         this.attributes = attributes;
     }
+
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder strb = new StringBuilder();
-        if(protocol != null)
+        if (protocol != null)
             strb.append(protocol).append("://");
-        if(host != null) {
+        if (host != null) {
             strb.append(host);
-            if(port != null)
+            if (port != null)
                 strb.append(":").append(port);
             strb.append("/");
         }
-        if(className == null){
+        if (className == null) {
             throw new MException("className 不能为空");
         }
         strb.append(className);
-        if(attributes.size()>0){
+        if (attributes.size() > 0) {
             strb.append("?");
             strb.append(dealMap(attributes));
         }
         return strb.toString();
     }
 
-    public String toUrlString(){
+    public String toUrlString() {
         try {
-            return URLEncoder.encode(this.toString(),"utf-8");
+            return URLEncoder.encode(this.toString(), "utf-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    //处理的时候同时进行url编码
+    /**
+     * 处理的时候同时进行url编码
+     */
     private String dealMap(Map<String, String> attributes) {
-        if(attributes.size() == 0)
+        if (attributes.size() == 0)
             return "";
         final Set<String> strings = attributes.keySet();
         StringBuffer strb = new StringBuffer();
-        for(String s:strings){
+        for (String s : strings) {
             try {
-                strb.append(URLEncoder.encode(s,"utf-8"));
+                strb.append(URLEncoder.encode(s, "utf-8"));
                 strb.append("=");
-                strb.append(URLEncoder.encode(attributes.get(s),"utf-8"));
+                strb.append(URLEncoder.encode(attributes.get(s), "utf-8"));
                 strb.append("&");
             } catch (UnsupportedEncodingException e) {
-                throw new MException("url编码{1}失败",s);
+                throw new MException("url编码{1}失败", s);
             }
         }
-        String result = strb.toString().substring(0,strb.length()-1);
+        String result = strb.toString().substring(0, strb.length() - 1);
         return result;
     }
 
     private final static Pattern REG_URL_PATTERN = Pattern.compile("((\\w+)://)?(([\\w\\.]+)(:(\\d+))\\/)?([\\w\\.]+)(\\?(([\\w\\=\\%&]+)))?");
 
-    public static MUrl toMUrl(String str){
+    /**
+     * zk注册信息转换成MUrl类
+     * @param str
+     * @return
+     */
+    public static MUrl toMUrl(String str) {
         MUrl mUrl = new MUrl();
         String decode = null;
         try {
@@ -115,7 +134,7 @@ public class MUrl {
         Matcher matcher = REG_URL_PATTERN.matcher(decode);
         String attributes = "";
 
-        if(matcher.find()){
+        if (matcher.find()) {
             mUrl.setProtocol(matcher.group(2));
             mUrl.setHost(matcher.group(4));
             mUrl.setPort(matcher.group(6));
@@ -123,10 +142,10 @@ public class MUrl {
             attributes = matcher.group(9);
         }
         String[] params = attributes.split("&");
-        for(String p:params){
+        for (String p : params) {
             String[] split1 = p.split("\\=");
             try {
-                mUrl.getAttributes().put(URLDecoder.decode(split1[0],"utf-8"),URLDecoder.decode(split1[1],"utf-8"));
+                mUrl.getAttributes().put(URLDecoder.decode(split1[0], "utf-8"), URLDecoder.decode(split1[1], "utf-8"));
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }

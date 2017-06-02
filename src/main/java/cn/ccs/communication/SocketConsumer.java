@@ -1,20 +1,13 @@
 package cn.ccs.communication;
 
-import cn.ccs.Constants;
 import cn.ccs.protocol.Protocol;
 import cn.ccs.protocol.TransProtocol;
 
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Created by chaichuanshi on 2017/5/19.

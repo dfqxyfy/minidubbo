@@ -1,13 +1,8 @@
 package communication;
 
-import cn.ccs.Constants;
-import cn.ccs.Provider;
-import cn.ccs.protocol.Protocol;
-import cn.ccs.protocol.TransProtocol;
+import cn.ccs.common.Constants;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -24,7 +19,7 @@ public class SocketProvider {
         serverSocket.bind(socketAddress);
     }
 
-    public static void start() throws IOException {
+    private static void start() throws IOException {
         while(true){
             Socket accept = serverSocket.accept();
             new ExThread(accept).start();
@@ -37,7 +32,7 @@ public class SocketProvider {
 }
 class ExThread extends Thread{
     private Socket socket;
-    public ExThread(Socket socket){
+    ExThread(Socket socket){
         this.socket = socket;
     }
     @Override

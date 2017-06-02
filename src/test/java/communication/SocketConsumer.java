@@ -1,6 +1,6 @@
 package communication;
 
-import cn.ccs.Constants;
+import cn.ccs.common.Constants;
 
 import java.io.BufferedReader;
 import java.io.IOException;

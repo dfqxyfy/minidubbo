@@ -1,61 +1,11 @@
 package cn.ccs.register;
 
-import cn.ccs.protocol.Protocol;
-import cn.ccs.protocol.RegProtocol;
-
-import java.io.*;
-
 /**
- * Created by chaichuanshi on 2017/5/19.
+ * Created by chaichuanshi on 2017/6/2.
+ * 该接口保持2个功能 1.服务端注册接口 2.客户端获取注册信息接口
  */
-public class Register {
-    private static String folder = System.getProperty("java.io.tmpdir");
-    private static String regFile = "minidubbo.dreg";
-    public static void register(String url){
-        write(url);
-    }
-    public static RegProtocol getRegFile(){
-        String str = read();
-        return Protocol.toRegProtocol(str);
-    }
 
-    private static synchronized void write(String str){
-        FileWriter fw = null;
-        try {
-            File f = new File(folder+regFile);
-            if(!f.exists())
-                f.createNewFile();
-            fw = new FileWriter(f);
-            fw.write(str);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                fw.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-
-    private static synchronized String read(){
-        BufferedReader br = null;
-        String regInfo = null;
-        try {
-            br = new BufferedReader(new FileReader(folder+regFile));
-            regInfo = br.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                br.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return regInfo;
-    }
-
+public interface Register {
+    void register(MUrl mUrl);
+    MUrl getRegister(String className);
 }

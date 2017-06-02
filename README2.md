@@ -14,3 +14,8 @@
     url解码
     /dubbo/com.ccs.dubbo.DubboService/providers/dubbo://192.168.31.181:20880/com.ccs.dubbo.DubboService?anyhost=true&application=anyname_provider&dubbo=2.5.3&interface=com.ccs.dubbo.DubboService&methods=sayHello&pid=8280&side=provider&timestamp=1495936879320
 
+基本改成zookeeper注册,从zookeeper中获取
+需要改进:
+1> zookeeper注册节点后,节点数据改变需要动态通知消费者
+2> 增加logger日志, 增加zk连接的异常处理
+3> 注册信息彻底改成MURL的形式, 删除掉原来通过临时文件的注册方式(通过抽象接口,支持继承实现)

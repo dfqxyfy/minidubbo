@@ -1,10 +1,11 @@
-package cn.ccs.config;
+package cn.ccs.common;
 
 import java.text.Format;
 import java.text.MessageFormat;
 import java.util.Formatter;
 
 /**
+ * 统一异常处理
  * Created by ccs on 2017/6/2.
  */
 public class MException extends RuntimeException{

@@ -1,11 +1,9 @@
 package cn.ccs;
 
 import cn.ccs.communication.SocketConsumer;
-import cn.ccs.config.MUrl;
-import cn.ccs.protocol.RegProtocol;
+import cn.ccs.register.MUrl;
 import cn.ccs.proxy.ProxyObject;
-import cn.ccs.register.Register;
-import cn.ccs.register.ZkRegister;
+import cn.ccs.register.zookeeper.ZkRegister;
 import cn.ccs.service.HelloService;
 
 import java.io.IOException;
