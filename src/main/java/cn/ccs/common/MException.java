@@ -1,8 +1,6 @@
 package cn.ccs.common;
 
-import java.text.Format;
 import java.text.MessageFormat;
-import java.util.Formatter;
 
 /**
  * 统一异常处理

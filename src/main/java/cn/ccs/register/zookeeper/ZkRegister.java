@@ -28,7 +28,7 @@ public class ZkRegister implements Register {
     private final String basicPath = "/mdubbo";
 
     private String connectString = null;
-    private final int sessionTimeout = 30000;
+    private static final int sessionTimeout = 30000;
 
     //注册在zk中使用 /mdubbo/cn.xxxService/mUrl的方式
     @Override
@@ -38,7 +38,7 @@ public class ZkRegister implements Register {
 
     @Override
     public MUrl getRegister(String className) {
-        List<String> children = null;
+        List<String> children;
         try {
             children = zookeeper.getChildren(basicPath + "/" + className, false);
         } catch (KeeperException | InterruptedException e) {//客户端获取异常

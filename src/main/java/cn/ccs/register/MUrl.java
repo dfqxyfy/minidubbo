@@ -119,7 +119,7 @@ public class MUrl {
     /**
      * zk注册信息转换成MUrl类
      * @param str
-     * @return
+     * @return MUrl
      */
     public static MUrl toMUrl(String str) {
         MUrl mUrl = new MUrl();
