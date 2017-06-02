@@ -39,15 +39,26 @@ public class ZkRegister implements Register {
     @Override
     public MUrl getRegister(String className) {
         List<String> children;
+        Random random = new Random();
+        int rand = 0;
+        String regStr = null;
         try {
             children = zookeeper.getChildren(basicPath + "/" + className, false);
+            rand = random.nextInt(children.size());
+            regStr = children.get(rand);
+            zookeeper.exists(basicPath + "/" + className + "/" + regStr, new Watcher() {
+                @Override
+                public void process(WatchedEvent watchedEvent) {
+                    if(watchedEvent.getState().getIntValue() == Event.EventType.NodeDeleted.getIntValue()){
+                        //Todo:节点删除,此处重新初始化节点
+                    }
+                }
+            });
         } catch (KeeperException | InterruptedException e) {//客户端获取异常
             LOGGER.error("客户端获取类{}出错", className, e);
             throw new MException("客户端获取类{1}出错", className);
         }
-        Random random = new Random();
-        int rand = random.nextInt(children.size());
-        String regStr = children.get(rand);
+
         return MUrl.toMUrl(regStr);
     }
 

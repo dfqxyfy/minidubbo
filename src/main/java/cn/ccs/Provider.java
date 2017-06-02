@@ -17,21 +17,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class Provider {
     public static Map<String,Object> objectMap = new ConcurrentHashMap<>();
-//    public static void main(String[] args) {
-//
-//        //注册服务
-//        RegProtocol regProtocol = new RegProtocol();
-//        regProtocol.setHost("127.0.0.1");
-//        regProtocol.setPort(Constants.SERVER_PORT);
-//        regProtocol.setClassName("cn.ccs.service.HelloService");
-//        Register.register(regProtocol.toString());
-//
-//
-//        HelloService helloService = new HelloServiceImpl();
-//        objectMap.put("cn.ccs.service.HelloService",helloService);
-//
-//          start();
-//    }
 
     public static void main(String[] args) throws IOException {
         MUrl mUrl = new MUrl();
@@ -60,7 +45,6 @@ public class Provider {
         try {
             //监听服务
             SocketProvider.start();
-
             System.in.read();
         } catch (IOException e) {
             e.printStackTrace();

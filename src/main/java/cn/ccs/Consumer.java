@@ -14,10 +14,8 @@ import java.io.IOException;
 public class Consumer {
     public static void main(String[] args) throws IOException {
 
-        //RegProtocol regProtocol = Register.getRegFile();
         ZkRegister zkRegister = new ZkRegister();
         zkRegister.init();
-       // SocketConsumer.init(regProtocol.getHost(),regProtocol.getPort());
 
         MUrl mUrl = zkRegister.getRegister(HelloService.class.getName());
 
