@@ -1,10 +1,13 @@
 package cn.ccs.config;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by ccs on 2017/5/28.
@@ -68,6 +71,15 @@ public class MUrl {
         return strb.toString();
     }
 
+    public String toUrlString(){
+        try {
+            return URLEncoder.encode(this.toString(),"utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     //处理的时候同时进行url编码
     private String dealMap(Map<String, String> attributes) {
         if(attributes.size() == 0)
@@ -88,4 +100,37 @@ public class MUrl {
         return result;
     }
 
+    private final static Pattern REG_URL_PATTERN = Pattern.compile("((\\w+)://)?(([\\w\\.]+)(:(\\d+))\\/)?([\\w\\.]+)(\\?(([\\w\\=\\%&]+)))?");
+
+    public static MUrl toMUrl(String str){
+        MUrl mUrl = new MUrl();
+        String decode = null;
+        try {
+            decode = URLDecoder.decode(str, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        //String hostInfo = "";
+        Matcher matcher = REG_URL_PATTERN.matcher(decode);
+        String attributes = "";
+
+        if(matcher.find()){
+            mUrl.setProtocol(matcher.group(2));
+            mUrl.setHost(matcher.group(4));
+            mUrl.setPort(matcher.group(6));
+            mUrl.setClassName(matcher.group(7));
+            attributes = matcher.group(9);
+        }
+        String[] params = attributes.split("&");
+        for(String p:params){
+            String[] split1 = p.split("\\=");
+            try {
+                mUrl.getAttributes().put(URLDecoder.decode(split1[0],"utf-8"),URLDecoder.decode(split1[1],"utf-8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+        return mUrl;
+    }
 }

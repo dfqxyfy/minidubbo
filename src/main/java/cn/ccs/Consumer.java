@@ -1,9 +1,11 @@
 package cn.ccs;
 
 import cn.ccs.communication.SocketConsumer;
+import cn.ccs.config.MUrl;
 import cn.ccs.protocol.RegProtocol;
 import cn.ccs.proxy.ProxyObject;
 import cn.ccs.register.Register;
+import cn.ccs.register.ZkRegister;
 import cn.ccs.service.HelloService;
 
 import java.io.IOException;
@@ -14,9 +16,14 @@ import java.io.IOException;
 public class Consumer {
     public static void main(String[] args) throws IOException {
 
-        RegProtocol regProtocol = Register.getRegFile();
-        SocketConsumer.init(regProtocol.getHost(),regProtocol.getPort());
+        //RegProtocol regProtocol = Register.getRegFile();
+        ZkRegister zkRegister = new ZkRegister();
+        zkRegister.init();
+       // SocketConsumer.init(regProtocol.getHost(),regProtocol.getPort());
 
+        MUrl mUrl = zkRegister.getRegister(HelloService.class.getName());
+
+        SocketConsumer.init(mUrl.getHost(),mUrl.getPort());
         //使用静态代理访问，后面通过asm来动态生成HelloService子类，实现该功能
         HelloService helloService = ProxyObject.getProxy(HelloService.class);
         try {
