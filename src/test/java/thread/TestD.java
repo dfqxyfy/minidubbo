@@ -4,6 +4,9 @@ package thread;
  * Created by chaichuanshi on 2017/5/27.
  */
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * java中的sleep()和wait()的区别
  * @author Hongten
@@ -11,6 +14,7 @@ package thread;
  */
 public class TestD {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestD.class);
     static  final Object obj = new Object();
 
     public static void main(String[] args) {
@@ -38,16 +42,16 @@ public class TestD {
         @Override
         public void run(){
             synchronized (TestD.class) {
-                System.out.println("enter thread1...");
-                System.out.println("thread1 is waiting...");
+                LOGGER.debug("enter thread1...");
+                LOGGER.debug("thread1 is waiting...");
                 try {
                     //调用wait()方法，线程会放弃对象锁，进入等待此对象的等待锁定池
                     TestD.class.wait();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                System.out.println("thread1 is going on ....");
-                System.out.println("thread1 is over!!!");
+                LOGGER.debug("thread1 is going on ....");
+                LOGGER.debug("thread1 is over!!!");
             }
         }
     }
@@ -56,8 +60,8 @@ public class TestD {
         @Override
         public void run(){
             synchronized (TestD.class) {
-                System.out.println("enter thread2....");
-                System.out.println("thread2 is sleep....");
+                LOGGER.debug("enter thread2....");
+                LOGGER.debug("thread2 is sleep....");
                 //只有针对此对象调用notify()方法后本线程才进入对象锁定池准备获取对象锁进入运行状态。
                 TestD.class.notify();
                 //==================
@@ -72,8 +76,8 @@ public class TestD {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                System.out.println("thread2 is going on....");
-                System.out.println("thread2 is over!!!");
+                LOGGER.debug("thread2 is going on....");
+                LOGGER.debug("thread2 is over!!!");
             }
        }
     }

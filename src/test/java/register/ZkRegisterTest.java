@@ -3,6 +3,8 @@ package register;
 import cn.ccs.register.MUrl;
 import cn.ccs.register.zookeeper.ZkRegister;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -10,6 +12,7 @@ import java.io.IOException;
  * Created by ccs on 2017/6/2.
  */
 public class ZkRegisterTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ZkRegisterTest.class);
     @Test
     public void zkTest() throws IOException {
         ZkRegister register = new ZkRegister();
@@ -25,6 +28,6 @@ public class ZkRegisterTest {
 
         register.register(mUrl);
         //String str = register.getRegister("cn.ccs.TestClass");
-        //System.out.println(str);
+        //LOGGER.info(str);
     }
 }

@@ -2,10 +2,13 @@ package cn.ccs;
 
 import cn.ccs.common.Constants;
 import cn.ccs.communication.SocketProvider;
+import cn.ccs.log.log4j.ConfigLogger;
 import cn.ccs.register.MUrl;
 import cn.ccs.register.zookeeper.ZkRegister;
 import cn.ccs.service.HelloService;
 import cn.ccs.service.HelloServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Map;
@@ -16,9 +19,12 @@ import java.util.concurrent.TimeUnit;
  * Created by chaichuanshi on 2017/5/19.
  */
 public class Provider {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Provider.class);
     public static Map<String,Object> objectMap = new ConcurrentHashMap<>();
 
     public static void main(String[] args) throws IOException {
+        //ConfigLogger.initLog();
+
         MUrl mUrl = new MUrl();
         mUrl.setPort(Constants.SERVER_PORT);
         mUrl.setProtocol("http");
@@ -36,7 +42,7 @@ public class Provider {
         try {
             TimeUnit.SECONDS.sleep(1000);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            LOGGER.info("end",e);
         }
     }
 
@@ -47,7 +53,7 @@ public class Provider {
             SocketProvider.start();
             System.in.read();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("启动异常",e);
         }
     }
 }

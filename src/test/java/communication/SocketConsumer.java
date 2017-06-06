@@ -1,6 +1,8 @@
 package communication;
 
 import cn.ccs.common.Constants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,6 +16,7 @@ import java.net.Socket;
  */
 public class SocketConsumer {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(SocketConsumer.class);
     private static Socket socket = null;
     public static void init(String host,String port){
         socket = new Socket();
@@ -37,7 +40,7 @@ public class SocketConsumer {
         StringBuilder strb = new StringBuilder();
         try {
             if ((receiveInfo = br.readLine()) != null ) {
-                System.out.println(receiveInfo);
+                LOGGER.info(receiveInfo);
                 strb.append(receiveInfo);
                 return strb.toString();
             }

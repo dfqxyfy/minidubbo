@@ -56,7 +56,7 @@ public class ZkRegister implements Register {
             });
         } catch (KeeperException | InterruptedException e) {//客户端获取异常
             LOGGER.error("客户端获取类{}出错", className, e);
-            throw new MException("客户端获取类{1}出错", className);
+            throw new MException("客户端获取类{}出错", className);
         }
 
         return MUrl.toMUrl(regStr);
@@ -99,7 +99,7 @@ public class ZkRegister implements Register {
             connectString = "127.0.0.1:2181";
         zookeeper = new ZooKeeper(connectString, sessionTimeout, new Watcher() {
             public void process(WatchedEvent event) {
-                System.out.println(event.getState());
+                LOGGER.debug("事件状态",event.getState());
             }
         });
     }

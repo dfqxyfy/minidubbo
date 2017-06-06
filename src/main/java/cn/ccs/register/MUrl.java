@@ -1,6 +1,8 @@
 package cn.ccs.register;
 
 import cn.ccs.common.MException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -115,7 +117,7 @@ public class MUrl {
     }
 
     private final static Pattern REG_URL_PATTERN = Pattern.compile("((\\w+)://)?(([\\w\\.]+)(:(\\d+))\\/)?([\\w\\.]+)(\\?(([\\w\\=\\%&]+)))?");
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(MUrl.class);
     /**
      * zk注册信息转换成MUrl类
      * @param str
@@ -127,7 +129,7 @@ public class MUrl {
         try {
             decode = URLDecoder.decode(str, "utf-8");
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            LOGGER.error("url:{}解码错误",str,e);
         }
 
         //String hostInfo = "";
@@ -147,7 +149,7 @@ public class MUrl {
             try {
                 mUrl.getAttributes().put(URLDecoder.decode(split1[0], "utf-8"), URLDecoder.decode(split1[1], "utf-8"));
             } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+                LOGGER.error("url:{}解码错误",str,e);
             }
         }
         return mUrl;

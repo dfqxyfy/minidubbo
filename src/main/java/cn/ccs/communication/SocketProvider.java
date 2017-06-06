@@ -4,6 +4,8 @@ import cn.ccs.common.Constants;
 import cn.ccs.Provider;
 import cn.ccs.protocol.Protocol;
 import cn.ccs.protocol.TransProtocol;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -17,6 +19,7 @@ import java.net.SocketAddress;
  * Created by chaichuanshi on 2017/5/19.
  */
 public class SocketProvider {
+    private final static Logger LOGGER = LoggerFactory.getLogger(SocketProvider.class);
     private static ServerSocket serverSocket = null;
     private static void init() throws IOException {
         if(serverSocket != null)
@@ -37,6 +40,7 @@ public class SocketProvider {
 
 }
 class ExThread extends Thread{
+    private final static Logger LOGGER = LoggerFactory.getLogger(ExThread.class);
     private Socket socket;
     public ExThread(Socket socket){
         this.socket = socket;
@@ -49,7 +53,7 @@ class ExThread extends Thread{
         try {
             br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("读写错误",e);
         }
         while (true) {
             try {
@@ -59,35 +63,33 @@ class ExThread extends Thread{
                 }else {
                     continue;
                 }
-                System.out.println("receiving msg:" + receiveInfo);
+                LOGGER.info("服务器收到消息:{}" , receiveInfo);
                 invokeMethod(tp);
 
                 OutputStreamWriter out = new OutputStreamWriter(socket.getOutputStream());
                 out.write(tp.toString());
                 out.write("\n");
                 out.flush();
-                System.out.println("server ..outprint....");
+                LOGGER.info("服务器输出{}",tp);
             } catch (IOException e) {
-                //inputStream.close();
-                e.printStackTrace();
+                LOGGER.error("想服务器写入错误",e);
             }
         }
     }
     private static void invokeMethod(TransProtocol tp){
         Object obj = Provider.objectMap.get(tp.getClassName());
+        Method method = null;
         try {
             //简化传值参数为String类型，并且只有一个参数
-            Method method = obj.getClass().getMethod(tp.getMethodName(), String.class);
+            method = obj.getClass().getMethod(tp.getMethodName(), String.class);
             try {
                 Object result = method.invoke(obj, tp.getParameter());
                 tp.setResult(result.toString());//默认为String
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
+            } catch (IllegalAccessException|InvocationTargetException e) {
+                LOGGER.error("方法{}执行错误",method);
             }
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            LOGGER.error("方法{}不存在",tp.getMethodName(),e);
         }
     }
 }

@@ -1,5 +1,8 @@
 package cn.ccs.protocol;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -11,7 +14,7 @@ import static javafx.scene.input.KeyCode.T;
  * Created by chaichuanshi on 2017/5/19.
  */
 public class Protocol {
-
+    private final static Logger LOGGER = LoggerFactory.getLogger(Protocol.class);
     public static Map<String, String> getMap(String info) {
         Map<String, String> map = new HashMap<>();
         String[] ss = info.split(",");
@@ -31,10 +34,8 @@ public class Protocol {
         Object obj = null;
         try {
             obj = t.newInstance();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+        } catch (InstantiationException|IllegalAccessException e) {
+            LOGGER.error("初始化类{}错误",t,e);
         }
         Method[] methods = t.getMethods();
         for (Method m : methods) {
@@ -44,10 +45,8 @@ public class Protocol {
             if (map.get(methodName) != null) {
                 try {
                     m.invoke(obj, map.get(methodName));
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
+                } catch (IllegalAccessException|InvocationTargetException e) {
+                    LOGGER.error("执行类{}的方法{}错误",t,methodName,e);
                 }
             }
         }

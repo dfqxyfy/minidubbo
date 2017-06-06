@@ -2,6 +2,8 @@ package cn.ccs.communication;
 
 import cn.ccs.protocol.Protocol;
 import cn.ccs.protocol.TransProtocol;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -13,6 +15,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by chaichuanshi on 2017/5/19.
  */
 public class SocketConsumer {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SocketConsumer.class);
 
     private static Socket socket = null;
     private static OutputStreamWriter out = null;
@@ -28,7 +32,7 @@ public class SocketConsumer {
         try {
             socket.connect(new InetSocketAddress(host, Integer.valueOf(port)));
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("连接错误",e);
         }
         out = new OutputStreamWriter(socket.getOutputStream());
         br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -57,7 +61,7 @@ public class SocketConsumer {
                 res.getLock().wait(3000);
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            LOGGER.error("唤醒异常",e);
         }
         result = res.getResult();
         //resMap.remove(tp.getId());
@@ -72,10 +76,10 @@ public class SocketConsumer {
                 String receiveInfo = null;
                 try {
                     while ((receiveInfo = br.readLine()) != null) {
-                        System.out.println(receiveInfo);
+                        LOGGER.debug("接收信息:{}",receiveInfo);
                         try {
                             TransProtocol tp = Protocol.toProtocol(receiveInfo, TransProtocol.class);
-                            System.out.println(tp);
+                            LOGGER.debug("中间tp输出:{}",tp);
                             if(tp.getId()!=null) {
                                 ResThread res = resMap.get(tp.getId());
                                 synchronized (res.getLock()) {
@@ -84,7 +88,7 @@ public class SocketConsumer {
                                 }
                             }
                         }catch (Exception e){
-                            e.printStackTrace();
+                            LOGGER.error("锁唤醒异常:",e);
                             continue;
                         }
                     }

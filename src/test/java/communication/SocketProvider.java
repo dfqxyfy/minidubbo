@@ -1,6 +1,8 @@
 package communication;
 
 import cn.ccs.common.Constants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -31,6 +33,7 @@ public class SocketProvider {
     }
 }
 class ExThread extends Thread{
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExThread.class);
     private Socket socket;
     ExThread(Socket socket){
         this.socket = socket;
@@ -42,19 +45,18 @@ class ExThread extends Thread{
         try {
             br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("读取数据出错",e);
         }
         String receiveInfo = null;
         while (true) {
             try {
-                System.out.println("receiving msg:" + receiveInfo);
                 if ((receiveInfo = br.readLine()) != null) {
                     OutputStreamWriter out = new OutputStreamWriter(socket.getOutputStream());
                     out.write("receiving msg:" + receiveInfo + "\n");
                     out.flush();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.error("消息错误", e);
             }
         }
     }
